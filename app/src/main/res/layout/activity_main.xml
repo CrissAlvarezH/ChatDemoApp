@@ -26,6 +26,7 @@
         android:layout_height="wrap_content" />
 
     <Button
+        android:onClick="clickEnviar"
         android:id="@+id/btn_enviar"
         android:text="ENVIAR"
         android:layout_marginRight="17dp"
