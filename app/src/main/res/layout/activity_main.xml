@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:background="#a7bfc0de"
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,45 +9,66 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <Spinner
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_conectados"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        app:cardCornerRadius="20dp"
         android:layout_marginTop="10dp"
-        android:padding="10dp"
-        android:id="@+id/spn_conectados"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></Spinner>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_marginTop="20dp"
-        android:padding="10dp"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginBottom="20dp"
-        android:layout_below="@id/spn_conectados"
-        android:id="@+id/txt_texto"
-        android:textSize="16sp"
+        <Spinner
+            android:padding="10dp"
+            android:id="@+id/spn_conectados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></Spinner>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_above="@id/card_mensaje"
+        android:layout_below="@id/card_conectados"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Texto" />
+        android:layout_height="wrap_content"/>
 
-    <EditText
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_above="@id/btn_enviar"
-        android:id="@+id/edt_texto"
-        android:hint="Escribe un texto..."
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <Button
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_mensaje"
+        android:layout_marginLeft="5dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginRight="7dp"
+        app:cardCornerRadius="20dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/btn_enviar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:backgroundTint="@android:color/transparent"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:id="@+id/edt_texto"
+            android:hint="Escribe un mensaje..."
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </android.support.v7.widget.CardView>
+
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_alignTop="@id/card_mensaje"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
         android:onClick="clickEnviar"
         android:id="@+id/btn_enviar"
-        android:text="ENVIAR"
-        android:layout_width="match_parent"
+        android:src="@drawable/ic_send"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
 
 </RelativeLayout>
