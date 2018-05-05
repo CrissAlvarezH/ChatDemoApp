@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     {
         try {
-            socket = IO.socket("http://10.10.10.108:3000");
+            socket = IO.socket("http://167.99.52.15:3000");
         } catch (URISyntaxException e) {
             Log.e(TAG, "Erro al crear el socket");
             e.printStackTrace();
