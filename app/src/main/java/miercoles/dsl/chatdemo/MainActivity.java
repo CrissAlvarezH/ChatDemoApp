@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -16,16 +18,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.EmptyStackException;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String EXTRA_NOMBRE = "nombre";
     private final String TAG = "ActividadSocket";
 
     private TextView txtTexto;
-    private EditText edtTexto;
+    private EditText edtTexto, edtPara;
     private Button btnEnviarTexto;
 
     private Socket socket;
     private OnNuevoTexto onNuevoTexto;
+    private String nombre;
 
     {
         try {
@@ -41,9 +46,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Bundle extras = getIntent().getExtras();
+        if(extras != null && extras.getString(EXTRA_NOMBRE) != null){
+            nombre = extras.getString(EXTRA_NOMBRE);
+
+            if(getSupportActionBar() != null){
+                getSupportActionBar().setTitle(nombre);
+            }
+        }else{
+            Toast.makeText(this, "Debe loguearse", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         txtTexto = findViewById(R.id.txt_texto);
         edtTexto = findViewById(R.id.edt_texto);
         btnEnviarTexto = findViewById(R.id.btn_enviar);
+        edtPara = findViewById(R.id.edt_para);
 
         onNuevoTexto = new OnNuevoTexto();
 
@@ -53,7 +71,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clickEnviar(View btn){
-        socket.emit("nuevoTexto", edtTexto.getText().toString());
+        JSONObject jsonEnviar = new JSONObject();
+        try {
+            jsonEnviar.put("para", edtPara.getText().toString());
+            jsonEnviar.put("texto", edtTexto.getText().toString());
+
+            socket.emit("nuevoTexto", jsonEnviar.toString());
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al enviar", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+
     }
 
     private class OnNuevoTexto implements Emitter.Listener {
