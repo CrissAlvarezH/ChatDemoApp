@@ -6,10 +6,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
@@ -23,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
 
     {
         try {
-            socket = IO.socket("http://192.168.100.53:3000");
+            socket = IO.socket("http://10.10.10.108:3000");
         } catch (URISyntaxException e) {
             Log.e(TAG, "Error al crear el socket");
             e.printStackTrace();
@@ -53,12 +58,29 @@ public class LoginActivity extends AppCompatActivity {
     private Emitter.Listener onUsuarioRegistrado = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            String mensaje = args[0].toString();
+            JSONObject mensaje = (JSONObject) args[0];
 
-            if(mensaje != null && mensaje.equals("usuario_add")){
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra(MainActivity.EXTRA_NOMBRE, edtNombre.getText().toString());
-                startActivity(intent);
+            try {
+                if(mensaje != null && mensaje.getString("mensaje").equals("usuario_add")){
+                    JSONArray usuariosJson = mensaje.getJSONArray("usuarios");
+
+                    String [] usuarios = new String[usuariosJson.length()];
+
+                    for(int i=0; i<usuariosJson.length(); i++){
+                        try {
+                            usuarios[i] = usuariosJson.getString(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra(MainActivity.EXTRA_NOMBRE, edtNombre.getText().toString());
+                    intent.putExtra(MainActivity.EXTRA_USUARIOS, usuarios);
+                    startActivity(intent);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     };
