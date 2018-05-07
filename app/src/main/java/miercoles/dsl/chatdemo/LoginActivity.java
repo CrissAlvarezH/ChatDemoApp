@@ -78,6 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                     intent.putExtra(MainActivity.EXTRA_NOMBRE, edtNombre.getText().toString());
                     intent.putExtra(MainActivity.EXTRA_USUARIOS, usuarios);
                     startActivity(intent);
+                    finish();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -89,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        socket.disconnect();
-        socket.off("usuarioAdd");
+        //socket.disconnect();
+        socket.off("usuarioAdd", onUsuarioRegistrado);
     }
 }

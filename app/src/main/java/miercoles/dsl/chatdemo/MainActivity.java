@@ -2,11 +2,14 @@ package miercoles.dsl.chatdemo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.EmptyStackException;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,14 +31,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_USUARIOS  = "usuarios";
     private final String TAG = "ActividadSocket";
 
-    private TextView txtTexto;
-    private EditText edtTexto;
-    private Button btnEnviarTexto;
 
     private Socket socket;
     private OnNuevoTexto onNuevoTexto;
+    private EditText edtTexto;
     private String nombre;
     private Spinner spnConectados;
+    private RecyclerView recyclerMensajes;
+    private MensajeAdapter mensajesAdapter;
 
     {
         try {
@@ -50,10 +54,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        txtTexto = findViewById(R.id.txt_texto);
         edtTexto = findViewById(R.id.edt_texto);
-        btnEnviarTexto = findViewById(R.id.btn_enviar);
         spnConectados = findViewById(R.id.spn_conectados);
+        recyclerMensajes = findViewById(R.id.recycler_mensajes);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);// Manda el scroll al final
+        recyclerMensajes.setLayoutManager(layoutManager);
+
+        mensajesAdapter = new MensajeAdapter(new ArrayList<Mensaje>());
+        recyclerMensajes.setAdapter(mensajesAdapter);
 
         Bundle extras = getIntent().getExtras();
         if(extras != null && extras.getString(EXTRA_NOMBRE) != null){
@@ -87,9 +97,16 @@ public class MainActivity extends AppCompatActivity {
         JSONObject jsonEnviar = new JSONObject();
         try {
             jsonEnviar.put("para", spnConectados.getSelectedItem().toString());
+            jsonEnviar.put("de", nombre);
             jsonEnviar.put("texto", edtTexto.getText().toString());
 
             socket.emit("nuevoTexto", jsonEnviar.toString());
+
+            Mensaje mensaje = new Mensaje("", edtTexto.getText().toString(), Mensaje.ENVIADO);
+            mensajesAdapter.addMensaje(mensaje);
+
+            edtTexto.setText("");
+            recyclerMensajes.smoothScrollToPosition( mensajesAdapter.getItemCount() - 1 );
         } catch (JSONException e) {
             Toast.makeText(this, "Error al enviar", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -112,14 +129,17 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         JSONObject json = (JSONObject) args[0];
                         texto = json.getString("texto");
+                        String de = json.getString("de");
+
+                        Mensaje mensaje = new Mensaje(de, texto, Mensaje.RECIVIDO);
+                        mensajesAdapter.addMensaje(mensaje);
                     } catch (JSONException e) {
-                        texto = "Error al obtener texto";
+                        Toast.makeText(MainActivity.this, "Error al obtener texto", Toast.LENGTH_SHORT).show();
 
                         Log.e(TAG, "Error al obtener texto del JSON");
                         e.printStackTrace();
                     }
 
-                    txtTexto.setText(texto);
                 }
             });
         }

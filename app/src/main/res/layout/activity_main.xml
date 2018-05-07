@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:background="#a7bfc0de"
+    android:background="#a7818181"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,6 +28,8 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.RecyclerView
+        android:layout_marginBottom="10dp"
+        android:id="@+id/recycler_mensajes"
         android:layout_above="@id/card_mensaje"
         android:layout_below="@id/card_conectados"
         android:layout_width="match_parent"
@@ -58,7 +60,6 @@
 
 
     <android.support.design.widget.FloatingActionButton
-        android:layout_alignTop="@id/card_mensaje"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="5dp"
@@ -67,8 +68,8 @@
         android:onClick="clickEnviar"
         android:id="@+id/btn_enviar"
         android:src="@drawable/ic_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="46dp"
+        android:layout_height="46dp" />
 
 
 </RelativeLayout>
