@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
 
     {
         try {
-            socket = IO.socket("http://167.99.52.15:3000");// ip de vendedorweb
+            socket = IO.socket("http://192.168.100.53:3000/");// ip de vendedorweb
         } catch (URISyntaxException e) {
             Log.e(TAG, "Error al crear el socket");
             e.printStackTrace();
